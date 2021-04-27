@@ -109,7 +109,35 @@ buttonSearch.addEventListener("click", function(e){
     let inputKeyword = document.getElementById("input-keyword").value;
     document.querySelector(".nav-link").classList.remove("active")
     getContent(response => {
-        response.menu.filter(data => similarity(data.nama, inputKeyword) > 0.2 ).map(data => {
+        response.menu.filter(data => data.nama.toLowerCase().indexOf(inputKeyword.toLowerCase()) > -1 ).map(data => {
+            console.log(data)
+            html += `
+                 <div class="col-sm-3 mb-3">
+                     <div class="card">
+                     <img src="/img/pizza/${data.gambar}" class="card-img-top" alt="...">
+                        <div class="card-body">
+                            <h5 class="card-title">${data.nama}</h5>
+                            <p class="card-text">${data.deskripsi}</p>
+                            <h3>Rp.${data.harga}</h3>
+                        </div>
+                    </div>
+                 </div>
+                 `
+            })
+
+            divContent.innerHTML = html;
+    })
+})
+
+document.getElementById("input-keyword").addEventListener("keyup", function(e){
+    console.log("object")
+    let html = '';
+    e.preventDefault();
+    let inputKeyword = document.getElementById("input-keyword").value;
+    document.querySelector(".nav-link").classList.remove("active")
+    console.log(inputKeyword.search("Beef"))
+    getContent(response => {
+        response.menu.filter(data => data.nama.toLowerCase().indexOf(inputKeyword.toLowerCase()) > -1).map(data => {
             console.log(data)
             html += `
                  <div class="col-sm-3 mb-3">
