@@ -48,7 +48,7 @@ getContent(response => {
 //filter content based on category menu that user clicked
 document.querySelectorAll('.nav-link').forEach(list => {
     list.addEventListener("click", function(){
-        document.querySelector(".active").classList.remove("active")
+        document.querySelector(".nav-item > .active").classList.remove("active")
         this.className += " active";
 
         //If menu is "All Menu" then run this code
@@ -97,32 +97,44 @@ document.querySelectorAll('.nav-link').forEach(list => {
 let buttonSearch = document.querySelector('#button-search')
 //User click search button
 buttonSearch.addEventListener("click", function(e){
-    let html = '';
     e.preventDefault();
+    let html = '';
     let inputKeyword = document.getElementById("input-keyword").value;
     document.querySelector(".nav-link").classList.remove("active")
     getContent(response => {
-        let result = response.menu.filter(data => data.nama.toLowerCase().indexOf(inputKeyword.toLowerCase()) > -1 ).map(data => {
-            console.log(data)
-            html += templateCardMovie(data)
+        let result;
+        //Filtering based on category menu and input
+        if(activeMenu == "all"){
+            result = response.menu.filter(data => data.nama.toLowerCase().indexOf(inputKeyword.toLowerCase()) > -1).map(data => {
+                html += templateCardMovie(data)
             })
-
-        if(result.length == 0){
-            html += `<h3 class="text-center mt-3"> Data not Found </h3>`
-        } 
+        } else {
+            result = response.menu.filter(data => data.nama.toLowerCase().indexOf(inputKeyword.toLowerCase()) > -1 && data.kategori == activeMenu).map(data => {
+                html += templateCardMovie(data)
+            })
+        }
         divContent.innerHTML = html
     })
 })
+
 //User type in search button
 document.getElementById("input-keyword").addEventListener("keyup", function(e){
-    let html = '';
     e.preventDefault();
+    let html = '';
     let inputKeyword = document.getElementById("input-keyword").value;
-    document.querySelector(".nav-link").classList.remove("active")
+    let activeMenu = document.querySelector(".active").dataset.menu
     getContent(response => {
-        let result = response.menu.filter(data => data.nama.toLowerCase().indexOf(inputKeyword.toLowerCase()) > -1).map(data => {
-                        html += templateCardMovie(data)
-                    })
+        let result
+        //Filtering based on category menu and input
+        if(activeMenu == "all"){
+            result = response.menu.filter(data => data.nama.toLowerCase().indexOf(inputKeyword.toLowerCase()) > -1).map(data => {
+                html += templateCardMovie(data)
+            })
+        } else {
+            result = response.menu.filter(data => data.nama.toLowerCase().indexOf(inputKeyword.toLowerCase()) > -1 && data.kategori == activeMenu).map(data => {
+                html += templateCardMovie(data)
+            })
+        }
         if(result.length == 0){
             html += `<h3 class="text-center mt-3"> Data not Found </h3>`
         } 
